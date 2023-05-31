@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RACAPP</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	crossorigin="anonymous">
+<style>
+        .card {
+            display: inline-block;
+            width: 200px;
+            padding: 10px;
+            margin: 10px;
+            border: 3px solid #ccc;
+            border-radius: 5px;
+        }
+        
+        .card button {
+    display: block;
+    margin-top: 10px;
+}
+</style>
+
+</head>
+<body>
+
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark">
+		<!-- Brand -->
+		<a class="navbar-brand" href="#">RACAPP</a>
+
+		<!-- Toggler/collapsibe Button -->
+		<button class="navbar-toggler" type="button" data-toggle="collapse"
+			data-target="#collapsibleNavbar">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<!-- Navbar links -->
+		<div class="collapse navbar-collapse" id="collapsibleNavbar">
+			<ul class="navbar-nav">
+			    <li class="nav-item"><button onclick="getData()">Araçlar</button></li>
+				<li class="nav-item"><button id="btnAddCar">Araba Ekle</button></li>
+				<li class="nav-item"><button id="btnAllCar">Marka Ekle</button></li>
+				<li class="nav-item"><button id="btnRentalCar">Model Ekle</button></li>
+			</ul>
+		</div>
+	</nav>
+
+	<div id="container"></div>
+
+	<script>
+	function getData() {
+	    fetch('http://localhost:8080/api/models')
+	        .then(response => response.json())
+	        .then(data => displayData(data))
+	        .catch(error => console.error('Veri alınamadı:', error));
+	}
+
+	function displayData(data) {
+	    const container = document.getElementById('container');
+	    container.innerHTML = '';
+
+	    for (let i = 0; i < data.length; i++) {
+	        const card = document.createElement('div');
+	        card.className = 'card';
+
+	        const title = document.createElement('h3');
+	        title.textContent = data[i].brandName;
+	        card.appendChild(title);
+
+	        const description = document.createElement('p');
+	        description.textContent = data[i].description;
+	        card.appendChild(description);
+
+	        const field1 = document.createElement('p');
+	        field1.textContent = 'Model : ' + data[i].name;
+	        card.appendChild(field1);
+
+// 	        const field2 = document.createElement('p');
+// 	        field2.textContent = 'Field 2: ' + data[i].field2;
+// 	        card.appendChild(field2);
+
+// 	        const field3 = document.createElement('p');
+// 	        field3.textContent = 'Field 3: ' + data[i].field3;
+// 	        card.appendChild(field3);
+	        
+// 	        const field4 = document.createElement('p');
+// 	        field4.textContent = 'Field 4: ' + data[i].field4;
+// 	        card.appendChild(field4);
+	        
+// 	        const field5 = document.createElement('p');
+// 	        field5.textContent = 'Field 5: ' + data[i].field5;
+// 	        card.appendChild(field5);
+	        
+// 	        const field6 = document.createElement('p');
+// 	        field6.textContent = 'Field 6: ' + data[i].field6;
+// 	        card.appendChild(field6);
+	        
+	        const button = document.createElement('button');
+	        button.textContent = 'Seç';
+	        button.addEventListener('click', function() {
+	            fetch('http://localhost:8080/api/cars/'+ data[i].id)
+	                .then(response => response.json())
+	                .then(rentData => displayRentData(rentData))
+	                .catch(error => console.error('Kiralama verisi alınamadı:', error));
+	        });
+	        card.appendChild(button);
+
+	        container.appendChild(card);
+	    }
+	}
+	
+	function displayRentData(rentData) {
+	    const rentContainer = document.createElement('div');
+	    rentContainer.className = 'card';
+
+	    for (const key in rentData) {
+	        if (rentData.hasOwnProperty(key)) {
+	            const p = document.createElement('p');
+	            p.textContent = key + ': ' + rentData[key];
+	            rentContainer.appendChild(p);
+	        }
+	    }
+
+	    const container = document.getElementById('container');
+	    container.appendChild(rentContainer);
+	}
+
+      </script>
+
+</body>
+</html>
